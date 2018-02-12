@@ -1,0 +1,39 @@
+#!groovy
+
+@Library('Divorce') _
+
+buildNode {
+  checkoutRepo()
+
+  try {
+    make 'install', name: 'Install dev dependencies'
+    make 'test-nsp', name: 'Security'
+
+    stage('Unit test and coverage') {
+     sh 'yarn test-coverage' 
+    }
+    
+    stage('Sonar scanner') {
+      onPR {
+        sh 'yarn sonar-scanner -- -Dsonar.analysis.mode=preview'
+      }
+
+      onMaster {
+       sh 'yarn sonar-scanner -- -Dsonar.host.url=https://sonar.reform.hmcts.net' 
+      }
+    }
+
+  } finally {
+    sh 'docker-compose run dev rm -rf coverage'
+    sh 'docker-compose run dev rm -rf .sonar'
+    make 'clean'
+  }
+
+  onPR {
+    enforceVersionBump()
+  }
+
+  onMaster {
+    publishNodePackage()
+  }
+}

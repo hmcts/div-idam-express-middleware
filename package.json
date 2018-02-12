@@ -1,0 +1,33 @@
+{
+  "name": "@hmcts/div-idam-express-middleware",
+  "version": "3.0.3",
+  "description": "Express middleware for IDAM integration",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test-coverage": "LOG_LEVEL=OFF istanbul cover _mocha './services/*.test.js' -- --recursive",
+    "posttest-coverage": "istanbul check-coverage --statements 80 --branches 80 --functions 80 --lines 80",
+    "test-nsp": "yarn nsp check",
+    "test": "yarn lint && yarn test-coverage && yarn test-nsp",
+    "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scanner"
+  },
+  "dependencies": {
+    "@hmcts/nodejs-logging": "^2.2.0",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "@hmcts/eslint-config": "^1.4.0",
+    "chai": "^4.0.2",
+    "eslint": "^4.17.0",
+    "eslint-plugin-mocha": "^4.11.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.0.0",
+    "nsp": "^3.1.0",
+    "sinon": "^2.3.2",
+    "sinon-stub-promise": "^4.0.0",
+    "sonar-scanner": "^1.0.1"
+  }
+}
