@@ -19,7 +19,7 @@ buildNode {
       }
 
       onMaster {
-       sh 'yarn sonar-scanner -- -Dsonar.host.url=https://sonar.reform.hmcts.net' 
+       sh 'yarn sonar-scanner -- -Dsonar.host.url=$SONARQUBE_URL'
       }
     }
 
