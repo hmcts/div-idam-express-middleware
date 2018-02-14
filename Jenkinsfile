@@ -15,11 +15,11 @@ buildNode {
     
     stage('Sonar scanner') {
       onPR {
-        sh 'yarn sonar-scanner -- -Dsonar.analysis.mode=preview'
+        sh 'yarn sonar-scanner -Dsonar.analysis.mode=preview -Dsonar.host.url=$SONARQUBE_URL'
       }
 
       onMaster {
-       sh 'yarn sonar-scanner -- -Dsonar.host.url=$SONARQUBE_URL'
+       sh 'yarn sonar-scanner -Dsonar.host.url=$SONARQUBE_URL'
       }
     }
 
