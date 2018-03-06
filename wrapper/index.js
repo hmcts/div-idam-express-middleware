@@ -6,6 +6,9 @@ const setup = (args = {}) => {
   const getIdamLoginUrl = options => {
     return loginUrl(options, args);
   };
+  const getIdamApiUrl = options => {
+    return args.logoutUrl;
+  };
 
   const getUserDetails = authToken => {
     return userDetails(authToken, args);
@@ -15,7 +18,7 @@ const setup = (args = {}) => {
     return accessToken(options, args);
   };
 
-  return { getIdamLoginUrl, getUserDetails, getAccessToken };
+  return { getIdamLoginUrl, getUserDetails, getAccessToken, getIdamApiUrl };
 };
 
 module.exports = { setup };
