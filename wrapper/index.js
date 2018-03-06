@@ -7,7 +7,7 @@ const setup = (args = {}) => {
     return loginUrl(options, args);
   };
   const getIdamApiUrl = options => {
-    return args.logoutUrl;
+    return args.idamApiUrl;
   };
 
   const getUserDetails = authToken => {
