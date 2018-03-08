@@ -12,26 +12,19 @@ const idamExpressLogout = (args = {}) => {
   const tokenCookieName = args.tokenCookieName || config.tokenCookieName;
 
   return (req, res, next) => {
-
     const authToken = cookies.get(req, tokenCookieName);
-
     const logoutUrl = `${idamFunctions.getIdamApiUrl()}/session/${authToken}`;
 
-    const options = {
-      method: 'DELETE',
-      uri: logoutUrl,
-    };
-
-    request(options)
-    .then(function (response) {
-      logger.info(`Token successfully deleted`);
-      next();
-    })
-    .catch(function (err) {
-      logger.error(`Token deletion failed with error ${err}`);
-      next();
-    });
-  }
+    return request.delete(logoutUrl)
+      .then(() => {
+        logger.info('Token successfully deleted');
+        next();
+      })
+      .catch(error => {
+        logger.error(`Token deletion failed with error ${error}`);
+        next();
+      });
+  };
 };
 
 module.exports = idamExpressLogout;

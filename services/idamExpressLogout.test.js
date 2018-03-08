@@ -1,16 +1,19 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
 const idamWrapper = require('../wrapper');
-const middleware = require('./idamExpressAuthenticate');
+const middleware = require('./idamExpressLogout');
 const sinonStubPromise = require('sinon-stub-promise');
+const request = require('request-promise-native');
+const cookies = require('../utilities/cookies');
 
 sinonStubPromise(sinon);
 
 let req = null;
 let res = null;
 let next = null;
-const idamArgs = {};
-
+const idamApiUrl = '/idamApiUrl';
+const authToken = 'token';
+const logoutUrl = `${idamApiUrl}/session/${authToken}`;
 describe('idamExpressLogout', () => {
   it('should return a middleware handler', () => {
     const handler = middleware();
@@ -20,51 +23,55 @@ describe('idamExpressLogout', () => {
   describe('middleware', () => {
     beforeEach(() => {
       req = { cookies: {} };
-      res = {
-        redirect: sinon.stub(),
-        cookie: sinon.stub(),
-        clearCookie: sinon.stub()
-      };
+      res = { cookie: sinon.stub() };
       next = sinon.stub();
+
+      const idamFUnctionsStub = {
+        getIdamApiUrl: sinon.stub()
+          .returns(idamApiUrl)
+      };
+      sinon.stub(idamWrapper, 'setup').returns(idamFUnctionsStub);
+      sinon.stub(cookies, 'get').returns(authToken);
+      sinon.stub(request, 'delete');
     });
 
-    {
-      let getIdamApiUrl = null;
-      let idamExpressLogout = null;
+    afterEach(() => {
+      cookies.get.restore();
+      idamWrapper.setup.restore();
+      request.delete.restore();
+    });
 
-      beforeEach(() => {
+    it('logs the user out of idam', done => {
+      // Arrange.
+      request.delete.resolves();
+      const handler = middleware();
 
-        getIdamApiUrl = sinon.stub().returns('/');
-        sinon.stub(idamWrapper, 'setup').returns({ getIdamApiUrl });
-        idamExpressLogout = middleware(idamArgs);
-      });
+      // Act
+      handler(req, res, next)
+        .then(() => {
+          // Assert
+          expect(idamWrapper.setup.calledOnce).to.eql(true);
+          expect(cookies.get.calledOnce).to.eql(true);
+          expect(request.delete.calledOnce).to.eql(true);
+          expect(request.delete.calledWith(logoutUrl)).to.eql(true);
+        })
+        .then(done, done);
+    });
+    it('logs error and calls next when promise rejects', done => {
+      // Arrange.
+      request.delete.rejects();
+      const handler = middleware();
 
-      afterEach(() => {
-        idamWrapper.setup.restore();
-      });
-
-      describe('no auth token', () => {
-        it('should call getIdamApiUrl', () => {
-          idamExpressLogout(req, res, next);
-
-          expect(getIdamApiUrl.callCount).to.equal(1);
-          expect(res.cookie.callCount).to.equal(1);
-        });
-      });
-      describe('with auth token', () => {
-        beforeEach(() => {
-          req = { cookies: { '__auth-token': 'token' } };
-        });
-
-
-        it('should call next if getIdamLoginUrl if getUserDetails rejects', () => {
-          idamExpressLogout(req, res, next);
-
-          expect(getIdamApiUrl.callCount).to.equal(1);
-          expect(res.cookie.callCount).to.equal(1);
-        });
-      });
-    }
-
+      // Act
+      handler(req, res, next)
+        .then(() => {
+          // Assert
+          expect(idamWrapper.setup.calledOnce).to.eql(true);
+          expect(cookies.get.calledOnce).to.eql(true);
+          expect(request.delete.calledOnce).to.eql(true);
+          expect(request.delete.calledWith(logoutUrl)).to.eql(true);
+        })
+        .then(done, done);
+    });
   });
 });

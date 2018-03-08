@@ -6,7 +6,7 @@ const setup = (args = {}) => {
   const getIdamLoginUrl = options => {
     return loginUrl(options, args);
   };
-  const getIdamApiUrl = options => {
+  const getIdamApiUrl = () => {
     return args.idamApiUrl;
   };
 
