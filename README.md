@@ -18,7 +18,7 @@ Until then, the package can be installed from its github URL, examples:
 yarn add https://github.com/hmcts/div-idam-express-middleware
 
 # Install a specific version
-yarn add https://github.com/hmcts/div-idam-express-middleware#3.0.4
+yarn add https://github.com/hmcts/div-idam-express-middleware#4.0.0
 ```
 
 
@@ -29,6 +29,7 @@ This module exposes three middleware functions that take in an object parameter.
 * **authenticate** - checks if the current user has a valid auth token cookie, if not redirects them to the idam login page with a query parameter `args.continueUrl` to determine where the user will be sent on successful login
 * **landingPage** - should only run on the page that idam redirects to after successful authentication. This sets auth token cookie based on the jwt query parameter passed back by idam
 * **protect** - checks if the user has a valid auth token cookie, and makes sure it matches against the current session user details. If not, this redirects them to a page defined by the user `args.indexUrl`
+* **logout** - This makes a request to idam to invalidate the session Jwt token on exit/logout. It provides the jwt token to idam as a path parameter in the http request url.
 
 
 ##  Arguments
