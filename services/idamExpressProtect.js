@@ -16,9 +16,7 @@ const idamExpressProtect = (args = {}) => {
     if (authToken) {
       idamFunctions
         .getUserDetails(authToken, args)
-        .then((/* userDetails */) => {
-          next();
-        })
+        .then(next)
         .catch(error => {
           logger.error(`User failed authentication: ${error}`);
           cookies.remove(res, tokenCookieName);
