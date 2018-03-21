@@ -12,6 +12,12 @@ buildNode {
     stage('Unit test and coverage') {
      sh 'yarn test-coverage' 
     }
+
+    stage('Mutation Testing') {
+      onPR {
+        sh 'yarn stryker'
+      }
+    }
     
     stage('Sonar scanner') {
       onPR {
