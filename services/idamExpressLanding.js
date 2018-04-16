@@ -39,7 +39,10 @@ const idamExpressLanding = (args = {}) => {
         return idamFunctions
           .getUserDetails(response.access_token, args);
       })
-      .then(next)
+      .then(userDetails => {
+        req.idam = { userDetails };
+        next();
+      })
       .catch(error => {
         logger.error(`An error occurred when authenticating the user: ${error}`);
         res.redirect(args.indexUrl);

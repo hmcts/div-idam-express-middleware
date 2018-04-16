@@ -23,11 +23,10 @@ const idamExpressProtect = (args = {}) => {
         .catch(error => {
           logger.error(`User failed authentication: ${error}`);
           cookies.remove(res, tokenCookieName);
-          res.redirect(args.indexUrl);
+          next();
         });
     } else {
-      // No authentication cookie set, so redirect to index.
-      res.redirect(args.indexUrl);
+      next();
     }
   };
 };

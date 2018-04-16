@@ -11,6 +11,10 @@ let req = null;
 let res = null;
 let next = null;
 const idamArgs = { indexUrl: '/' };
+const userDetails = {
+  id: 'idam.user.id',
+  email: 'email@email.com'
+};
 
 describe('idamExpressLanding', () => {
   it('returns a middleware handler', () => {
@@ -52,9 +56,11 @@ describe('idamExpressLanding', () => {
         req.query.code = 'code';
         req.cookies[config.stateCookieName] = 'state';
 
-        idamExpressLanding(req, res, next);
         const response = { body: { access_token: 'access_token' } };
         getAccessToken.resolves(response);
+        getUserDetails.resolves(userDetails);
+
+        idamExpressLanding(req, res, next);
 
         expect(getAccessToken.callCount).to.equal(1);
         expect(getUserDetails.callCount).to.equal(1);
@@ -62,12 +68,29 @@ describe('idamExpressLanding', () => {
         expect(next.callCount).to.equal(1);
       });
 
+      it('should set idam userDetails', () => {
+        req.query.code = 'code';
+        req.cookies[config.stateCookieName] = 'state';
+
+        const response = { body: { access_token: 'access_token' } };
+        getAccessToken.resolves(response);
+        getUserDetails.resolves(userDetails);
+
+        idamExpressLanding(req, res, next);
+
+        expect(getAccessToken.callCount).to.equal(1);
+        expect(getUserDetails.callCount).to.equal(1);
+        expect(res.cookie.callCount).to.equal(1);
+        expect(next.callCount).to.equal(1);
+        expect(req.idam.userDetails).to.equal(userDetails);
+      });
+
       it('redirects if error with getAccessToken response', () => {
         req.query.code = 'code';
         req.cookies[config.stateCookieName] = 'state';
 
-        idamExpressLanding(req, res, next);
         getAccessToken.rejects();
+        idamExpressLanding(req, res, next);
 
         expect(getAccessToken.callCount).to.equal(1);
         expect(res.redirect.callCount).to.equal(1);
