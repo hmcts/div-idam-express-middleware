@@ -10,6 +10,10 @@ let req = null;
 let res = null;
 let next = null;
 const idamArgs = {};
+const userDetails = {
+  id: 'idam.user.id',
+  email: 'email@email.com'
+};
 
 describe('idamExpressAuthenticate', () => {
   it('should return a middleware handler', () => {
@@ -58,17 +62,25 @@ describe('idamExpressAuthenticate', () => {
         });
 
         it('should call next if getUserDetails resolves', () => {
+          getUserDetails.resolves(userDetails);
           idamExpressAuthenticate(req, res, next);
-          getUserDetails.resolves();
 
           expect(getUserDetails.callCount).to.equal(1);
           expect(next.callCount).to.equal(1);
         });
 
-        it('should call next if getIdamLoginUrl if getUserDetails rejects', () => {
+        it('should set idam userDetails if getUserDetails resolves', () => {
+          getUserDetails.resolves(userDetails);
           idamExpressAuthenticate(req, res, next);
 
+          expect(getUserDetails.callCount).to.equal(1);
+          expect(req.idam.userDetails).to.equal(userDetails);
+          expect(next.callCount).to.equal(1);
+        });
+
+        it('should call next if getIdamLoginUrl if getUserDetails rejects', () => {
           getUserDetails.rejects();
+          idamExpressAuthenticate(req, res, next);
 
           expect(getUserDetails.callCount).to.equal(1);
           expect(getIdamLoginUrl.callCount).to.equal(1);

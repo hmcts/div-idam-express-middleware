@@ -2,7 +2,7 @@ const sinon = require('sinon');
 const { expect } = require('chai');
 const config = require('../config');
 const idamWrapper = require('../wrapper');
-const middleware = require('./idamExpressProtect');
+const middleware = require('./idamUserDetails');
 const sinonStubPromise = require('sinon-stub-promise');
 
 sinonStubPromise(sinon);
@@ -16,7 +16,7 @@ const userDetails = {
   email: 'email@email.com'
 };
 
-describe('idamExpressLanding', () => {
+describe('idamUserDetails', () => {
   it('should return a middleware handler', () => {
     const handler = middleware();
     expect(handler).to.be.a('function');
@@ -71,13 +71,14 @@ describe('idamExpressLanding', () => {
         expect(req.idam.userDetails).to.equal(userDetails);
       });
 
-      it('redirects if getUserDetails rejects', () => {
+      it('calls next if getUserDetails rejects', () => {
         req.cookies[config.tokenCookieName] = 'token';
 
         getUserDetails.rejects();
         idamExpressProtect(req, res, next);
 
-        expect(res.redirect.callCount).to.equal(1);
+        expect(getUserDetails.callCount).to.equal(1);
+        expect(next.callCount).to.equal(1);
       });
 
       it('cookie to be removed if getUserDetails rejects', () => {
@@ -99,11 +100,11 @@ describe('idamExpressLanding', () => {
       });
     }
 
-    it('redirects if no token cookie', () => {
+    it('calls next if no token cookie', () => {
       const handler = middleware(idamArgs);
       handler(req, res, next);
 
-      expect(res.redirect.callCount).to.equal(1);
+      expect(next.callCount).to.equal(1);
     });
   });
 });

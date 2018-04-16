@@ -28,7 +28,8 @@ const idamExpressAuthenticate = (args = {}) => {
     if (authToken) {
       idamFunctions
         .getUserDetails(authToken)
-        .then((/* userDetails */) => {
+        .then(userDetails => {
+          req.idam = { userDetails };
           next();
         })
         .catch(error => {
