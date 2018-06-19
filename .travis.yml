@@ -1,0 +1,14 @@
+language: node_js
+cache: yarn
+script:
+- yarn --version
+- yarn check --integrity
+- yarn test
+deploy:
+  provider: npm
+  email: jenkins-reform@hmcts.net
+  api_key:
+    secure: Yysjrn34LmIcX/rxdm84QmXVgHViZhLQa5emqvSAqLYTDG9W7Eih4UM4bsTAbh459g0qlw1Vnh45ef7vPsHKzwNTaWI3gIuBbfbuDAGW3PD/k6wkXSEKlQke1UOjXfrbX+6CY3I+78xEIQRHNdx2EcgwnykH9Pjpp5klHSORM4+/Y40FFJx1XmMU9X87TN3IIx/7acVQm1wOBsLJJWLPq/03Sj3OvK7a6dEsRPp59Uo95ICZhHguNqEBI4GCkBr8h94MBSY+oeKDNeuXsx27mZtcFhPmKqWwf+hfaSFy+jhnddFl25oEw+4K4nR1nnaVdCDVbLahvtCtx+UAgxOdGQE5ceWgjk8SXhKnb1p1LwU3zUfc3HCNxNc59YQeLnXxBOiksmkCvRfjCCzENhEdgJR4ICMTsAnnfV8cv8534IyCBcBPx6VjMm4Zq9yHW8j/Q+jSyNIvTNWZQoHEBXL/yFP1C1OPWGPHqvPeFtHqPm885/RDaYcQPqh0FeQ3hm49d3+El8gW1jikjDY5Xz970ccY3iknjkBA9nIaDbthVZRHsOVXj5/wuF+jEPJNUh8eyRzF86O/P/wFtqnkVl9JQj3B6Hf2rGQWwyLO4c4haUk5d1YH8UQkkglAaCDievDgQJvVPSwRH2Q73IdKp0wotYtGKs5n3gQWewIwHoFf+so=
+  on:
+    tags: true
+    repo: hmcts/div-idam-express-middleware
