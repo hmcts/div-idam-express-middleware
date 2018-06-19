@@ -23,7 +23,7 @@ describe('idamExpressLogout', () => {
   describe('middleware', () => {
     beforeEach(() => {
       req = { cookies: {} };
-      res = { cookie: sinon.stub() };
+      res = { cookie: sinon.stub(), clearCookie: sinon.stub() };
       next = sinon.stub();
 
       const idamFUnctionsStub = {
@@ -54,6 +54,7 @@ describe('idamExpressLogout', () => {
           expect(cookies.get.calledOnce).to.eql(true);
           expect(request.delete.calledOnce).to.eql(true);
           expect(request.delete.calledWith(logoutUrl)).to.eql(true);
+          expect(res.clearCookie.calledOnce).to.eql(true);
         })
         .then(done, done);
     });
