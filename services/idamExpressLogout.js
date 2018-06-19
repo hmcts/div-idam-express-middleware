@@ -19,7 +19,7 @@ const idamExpressLogout = (args = {}) => {
       .then(() => {
         logger.info('Token successfully deleted');
         // if logout is successfull remove token cookie
-        res.clearCookie(tokenCookieName);
+        cookies.remove(res, tokenCookieName);
         next();
       })
       .catch(error => {

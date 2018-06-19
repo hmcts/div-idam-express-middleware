@@ -8,7 +8,10 @@ const set = (res, cookieName, cookieValue,
 };
 
 const get = (req, cookieName) => {
-  return req.cookies[cookieName];
+  if (req.cookies) {
+    return req.cookies[cookieName];
+  }
+  return undefined; // eslint-disable-line no-undefined
 };
 
 const remove = (res, cookieName) => {

@@ -23,7 +23,7 @@ describe('idamExpressLogout', () => {
   describe('middleware', () => {
     beforeEach(() => {
       req = { cookies: {} };
-      res = { cookie: sinon.stub(), clearCookie: sinon.stub() };
+      res = { cookie: sinon.stub() };
       next = sinon.stub();
 
       const idamFUnctionsStub = {
@@ -32,11 +32,13 @@ describe('idamExpressLogout', () => {
       };
       sinon.stub(idamWrapper, 'setup').returns(idamFUnctionsStub);
       sinon.stub(cookies, 'get').returns(authToken);
+      sinon.stub(cookies, 'remove').returns(authToken);
       sinon.stub(request, 'delete');
     });
 
     afterEach(() => {
       cookies.get.restore();
+      cookies.remove.restore();
       idamWrapper.setup.restore();
       request.delete.restore();
     });
@@ -54,7 +56,7 @@ describe('idamExpressLogout', () => {
           expect(cookies.get.calledOnce).to.eql(true);
           expect(request.delete.calledOnce).to.eql(true);
           expect(request.delete.calledWith(logoutUrl)).to.eql(true);
-          expect(res.clearCookie.calledOnce).to.eql(true);
+          expect(cookies.remove.calledOnce).to.eql(true);
         })
         .then(done, done);
     });
