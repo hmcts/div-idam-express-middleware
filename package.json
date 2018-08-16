@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/div-idam-express-middleware",
-  "version": "6.0.2",
+  "version": "6.1.0",
   "description": "Express middleware for IDAM integration",
   "license": "MIT",
   "main": "index.js",

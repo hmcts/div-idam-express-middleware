@@ -6,6 +6,7 @@ const setup = (args = {}) => {
   const getIdamLoginUrl = options => {
     return loginUrl(options, args);
   };
+
   const getIdamApiUrl = () => {
     return args.idamApiUrl;
   };
@@ -18,7 +19,17 @@ const setup = (args = {}) => {
     return accessToken(options, args);
   };
 
-  return { getIdamLoginUrl, getUserDetails, getAccessToken, getIdamApiUrl };
+  const getServiceAuth = () => {
+    return args.serviceAuth;
+  };
+
+  return {
+    getIdamLoginUrl,
+    getUserDetails,
+    getAccessToken,
+    getIdamApiUrl,
+    getServiceAuth
+  };
 };
 
 module.exports = { setup };

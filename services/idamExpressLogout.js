@@ -14,8 +14,15 @@ const idamExpressLogout = (args = {}) => {
   return (req, res, next) => {
     const authToken = cookies.get(req, tokenCookieName);
     const logoutUrl = `${idamFunctions.getIdamApiUrl()}/session/${authToken}`;
+    const options = {
+      uri: logoutUrl,
+      headers: {
+        Authorization: idamFunctions.getServiceAuth(),
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    };
 
-    return request.delete(logoutUrl)
+    return request.delete(options)
       .then(() => {
         logger.info('Token successfully deleted');
         // if logout is successfull remove token cookie
