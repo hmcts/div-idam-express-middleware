@@ -1,6 +1,7 @@
 const loginUrl = require('./loginUrl');
 const userDetails = require('./getUserDetails');
 const accessToken = require('./accessToken');
+const serviceAuth = require('./getServiceAuth');
 
 const setup = (args = {}) => {
   const getIdamLoginUrl = options => {
@@ -20,7 +21,7 @@ const setup = (args = {}) => {
   };
 
   const getServiceAuth = () => {
-    return args.serviceAuth;
+    return serviceAuth(args);
   };
 
   return {
