@@ -16,7 +16,10 @@ const idamExpressLogout = (args = {}) => {
     const logoutUrl = `${idamFunctions.getIdamApiUrl()}/session/${authToken}`;
     const options = {
       uri: logoutUrl,
-      headers: { Authorization: idamFunctions.getServiceAuth() }
+      headers: {
+        Authorization: idamFunctions.getServiceAuth(),
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     };
 
     return request.delete(options)

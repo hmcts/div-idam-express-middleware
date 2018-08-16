@@ -17,7 +17,10 @@ const logoutUrl = `${idamApiUrl}/session/${authToken}`;
 const serviceAuth = 'base64String';
 const options = {
   uri: logoutUrl,
-  headers: { Authorization: serviceAuth }
+  headers: {
+    Authorization: serviceAuth,
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
 };
 describe('idamExpressLogout', () => {
   it('should return a middleware handler', () => {
