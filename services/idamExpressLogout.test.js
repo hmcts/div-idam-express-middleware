@@ -14,6 +14,11 @@ let next = null;
 const idamApiUrl = '/idamApiUrl';
 const authToken = 'token';
 const logoutUrl = `${idamApiUrl}/session/${authToken}`;
+const serviceAuth = 'base64String';
+const options = {
+  uri: logoutUrl,
+  headers: { Authorization: serviceAuth }
+};
 describe('idamExpressLogout', () => {
   it('should return a middleware handler', () => {
     const handler = middleware();
@@ -26,11 +31,13 @@ describe('idamExpressLogout', () => {
       res = { cookie: sinon.stub() };
       next = sinon.stub();
 
-      const idamFUnctionsStub = {
+      const idamFunctionsStub = {
         getIdamApiUrl: sinon.stub()
-          .returns(idamApiUrl)
+          .returns(idamApiUrl),
+        getServiceAuth: sinon.stub()
+          .returns(serviceAuth)
       };
-      sinon.stub(idamWrapper, 'setup').returns(idamFUnctionsStub);
+      sinon.stub(idamWrapper, 'setup').returns(idamFunctionsStub);
       sinon.stub(cookies, 'get').returns(authToken);
       sinon.stub(cookies, 'remove').returns(authToken);
       sinon.stub(request, 'delete');
@@ -55,7 +62,7 @@ describe('idamExpressLogout', () => {
           expect(idamWrapper.setup.calledOnce).to.eql(true);
           expect(cookies.get.calledOnce).to.eql(true);
           expect(request.delete.calledOnce).to.eql(true);
-          expect(request.delete.calledWith(logoutUrl)).to.eql(true);
+          expect(request.delete.calledWith(options)).to.eql(true);
           expect(cookies.remove.calledOnce).to.eql(true);
         })
         .then(done, done);
@@ -72,7 +79,7 @@ describe('idamExpressLogout', () => {
           expect(idamWrapper.setup.calledOnce).to.eql(true);
           expect(cookies.get.calledOnce).to.eql(true);
           expect(request.delete.calledOnce).to.eql(true);
-          expect(request.delete.calledWith(logoutUrl)).to.eql(true);
+          expect(request.delete.calledWith(options)).to.eql(true);
         })
         .then(done, done);
     });
