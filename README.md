@@ -15,7 +15,7 @@ Until then, the package can be installed from its github URL, examples:
 
 ```bash
 # Install the latest version
-yarn add https://github.com/hmcts/div-idam-express-middleware
+yarn add @hmcts/div-idam-express-middleware
 
 # Install a specific version
 yarn add https://github.com/hmcts/div-idam-express-middleware#4.0.0
