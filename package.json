@@ -30,5 +30,8 @@
     "sinon": "^2.3.2",
     "sinon-stub-promise": "^4.0.0",
     "sonar-scanner": "^1.0.1"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
