@@ -36,6 +36,9 @@ const idamExpressLanding = (args = {}) => {
       })
       .then(response => {
         cookies.set(res, tokenCookieName, response.access_token, args.hostName);
+        // set cookie on req so it can be used during this request
+        req.cookies = req.cookies || {};
+        req.cookies[tokenCookieName] = response.access_token;
         return idamFunctions
           .getUserDetails(response.access_token, args);
       })
