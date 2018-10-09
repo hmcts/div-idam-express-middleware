@@ -72,7 +72,7 @@ describe('idamExpressLanding', () => {
         req.query.code = 'code';
         req.cookies[config.stateCookieName] = 'state';
 
-        const response = { body: { access_token: 'access_token' } };
+        const response = { access_token: 'access_token' };
         getAccessToken.resolves(response);
         getUserDetails.resolves(userDetails);
 
@@ -81,6 +81,7 @@ describe('idamExpressLanding', () => {
         expect(getAccessToken.callCount).to.equal(1);
         expect(getUserDetails.callCount).to.equal(1);
         expect(res.cookie.callCount).to.equal(1);
+        expect(req.cookies['__auth-token']).to.eql(response.access_token);
         expect(next.callCount).to.equal(1);
         expect(req.idam.userDetails).to.equal(userDetails);
       });
