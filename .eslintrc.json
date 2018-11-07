@@ -30,7 +30,7 @@
     "mocha/no-exclusive-tests": "error",
     "max-len": [
       "error", {
-        "code": 80,
+        "code": 100,
         "ignoreStrings": true,
         "ignoreTemplateLiterals": true,
         "ignoreComments": true,
