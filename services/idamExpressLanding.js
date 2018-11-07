@@ -13,60 +13,62 @@ const idamExpressLanding = (args = {}) => {
 
   return (req, res, next) => {
     const authToken = req.query[tokenCookieName];
-    if (authToken) {
-      cookies.set(res, tokenCookieName, authToken, args.hostName);
-      // set cookie on req so it can be used during this request
-      req.cookies = req.cookies || {};
-      req.cookies[tokenCookieName] = authToken;
-      idamFunctions.getUserDetails(authToken, args)
-        .then(userDetails => {
-          req.idam = { userDetails };
-          next();
-        })
-        .catch(error => {
-          logger.error(`An error occurred when authenticating the user: ${error}`);
-          res.redirect(args.indexUrl);
-        });
-    } else {
-      const state = cookies.get(req, stateCookieName);
-      if (!state) {
-        logger.error('State cookie does not exist');
-        res.redirect(args.indexUrl);
-        return;
-      }
+    const code = req.query.code;
 
-      const code = req.query.code;
-      if (!code) {
+    // If no code then landing page was not reached through IDAM
+    if (!code) {
+      if (authToken) {
+        cookies.set(res, tokenCookieName, authToken, args.hostName);
+        // set cookie on req so it can be used during this request
+        req.cookies = req.cookies || {};
+        req.cookies[tokenCookieName] = authToken;
+        idamFunctions.getUserDetails(authToken, args)
+          .then(userDetails => {
+            req.idam = { userDetails };
+            next();
+          })
+          .catch(error => {
+            logger.error(`An error occurred when authenticating the user: ${error}`);
+            res.redirect(args.indexUrl);
+          });
+      } else {
         logger.error('Code has not been set on the query string');
         res.redirect(args.indexUrl);
-        return;
       }
-
-      cookies.remove(res, stateCookieName);
-
-      idamFunctions
-        .getAccessToken({
-          code,
-          state,
-          redirect_uri: args.redirectUri
-        })
-        .then(response => {
-          cookies.set(res, tokenCookieName, response.access_token, args.hostName);
-          // set cookie on req so it can be used during this request
-          req.cookies = req.cookies || {};
-          req.cookies[tokenCookieName] = response.access_token;
-          return idamFunctions
-            .getUserDetails(response.access_token, args);
-        })
-        .then(userDetails => {
-          req.idam = { userDetails };
-          next();
-        })
-        .catch(error => {
-          logger.error(`An error occurred when authenticating the user: ${error}`);
-          res.redirect(args.indexUrl);
-        });
+      return;
     }
+
+    const state = cookies.get(req, stateCookieName);
+    if (!state) {
+      logger.error('State cookie does not exist');
+      res.redirect(args.indexUrl);
+      return;
+    }
+
+    cookies.remove(res, stateCookieName);
+
+    idamFunctions
+      .getAccessToken({
+        code,
+        state,
+        redirect_uri: args.redirectUri
+      })
+      .then(response => {
+        cookies.set(res, tokenCookieName, response.access_token, args.hostName);
+        // set cookie on req so it can be used during this request
+        req.cookies = req.cookies || {};
+        req.cookies[tokenCookieName] = response.access_token;
+        return idamFunctions
+          .getUserDetails(response.access_token, args);
+      })
+      .then(userDetails => {
+        req.idam = { userDetails };
+        next();
+      })
+      .catch(error => {
+        logger.error(`An error occurred when authenticating the user: ${error}`);
+        res.redirect(args.indexUrl);
+      });
   };
 };
 
