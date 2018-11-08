@@ -12,7 +12,7 @@ const idamExpressLanding = (args = {}) => {
   const stateCookieName = args.stateCookieName || config.stateCookieName;
 
   return (req, res, next) => {
-    const authToken = req.headers[tokenCookieName];
+    const authToken = req.query[tokenCookieName];
     const code = req.query.code;
 
     // If no code then landing page was not reached through IDAM

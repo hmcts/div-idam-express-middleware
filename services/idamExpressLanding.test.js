@@ -26,8 +26,7 @@ describe('idamExpressLanding', () => {
     beforeEach(() => {
       req = {
         cookies: {},
-        query: [],
-        headers: {}
+        query: []
       };
       res = {
         redirect: sinon.stub(),
@@ -102,7 +101,7 @@ describe('idamExpressLanding', () => {
 
       context('authToken query', () => {
         beforeEach(() => {
-          req.headers[config.tokenCookieName] = 'authToken';
+          req.query[config.tokenCookieName] = 'authToken';
         });
 
         it('should set the authToken cookie with the query value', () => {
