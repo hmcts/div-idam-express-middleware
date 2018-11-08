@@ -100,8 +100,10 @@ describe('idamExpressLanding', () => {
       });
 
       context('authToken query', () => {
+        const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UifQ.DjwRE2jZhren2Wt37t5hlVru6Myq4AhpGLiiefF69u8';
+
         beforeEach(() => {
-          req.query[config.tokenCookieName] = 'authToken';
+          req.query[config.tokenCookieName] = testToken;
         });
 
         it('should set the authToken cookie with the query value', () => {
@@ -112,10 +114,23 @@ describe('idamExpressLanding', () => {
           expect(getUserDetails.callCount).to.equal(1);
           expect(res.cookie.callCount).to.equal(1);
           expect(next.callCount).to.equal(1);
-          expect(req.cookies[config.tokenCookieName]).to.equal('authToken');
+          expect(req.cookies[config.tokenCookieName]).to.equal(testToken);
         });
 
-        it('should redirect if authToken is invalid', () => {
+        it('should throw error is authToken is invalid', () => {
+          req.query[config.tokenCookieName] = 'invalidAuthToken';
+
+          try {
+            idamExpressLanding(req, res, next);
+          } catch (error) {
+            expect(typeof error).to.not.equal('undefined');
+          }
+
+          expect(res.redirect.callCount).to.equal(0);
+          expect(next.callCount).to.equal(0);
+        });
+
+        it('should redirect if authToken is unauthorised', () => {
           getUserDetails.rejects();
 
           idamExpressLanding(req, res, next);

@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/div-idam-express-middleware",
-  "version": "6.3.2",
+  "version": "6.3.3",
   "description": "Express middleware for IDAM integration",
   "license": "MIT",
   "main": "index.js",
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@hmcts/nodejs-logging": "^2.2.0",
+    "jwt-decode": "^2.2.0",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
     "uuid": "^3.1.0"
