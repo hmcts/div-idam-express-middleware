@@ -2,6 +2,7 @@ const idamWrapper = require('../wrapper');
 const { Logger } = require('@hmcts/nodejs-logging');
 const config = require('../config');
 const cookies = require('../utilities/cookies');
+const jwtDecode = require('jwt-decode');
 
 const logger = Logger.getLogger(__filename);
 
@@ -18,6 +19,9 @@ const idamExpressLanding = (args = {}) => {
     // If no code then landing page was not reached through IDAM
     if (!code) {
       if (authToken) {
+        // validate authToken. Throws error if invalid
+        jwtDecode(authToken);
+
         cookies.set(res, tokenCookieName, authToken, args.hostName);
         // set cookie on req so it can be used during this request
         req.cookies = req.cookies || {};
