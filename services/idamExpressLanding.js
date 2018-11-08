@@ -12,16 +12,35 @@ const idamExpressLanding = (args = {}) => {
   const stateCookieName = args.stateCookieName || config.stateCookieName;
 
   return (req, res, next) => {
-    const state = cookies.get(req, stateCookieName);
-    if (!state) {
-      logger.error('State cookie does not exist');
-      res.redirect(args.indexUrl);
+    const authToken = req.query[tokenCookieName];
+    const code = req.query.code;
+
+    // If no code then landing page was not reached through IDAM
+    if (!code) {
+      if (authToken) {
+        cookies.set(res, tokenCookieName, authToken, args.hostName);
+        // set cookie on req so it can be used during this request
+        req.cookies = req.cookies || {};
+        req.cookies[tokenCookieName] = authToken;
+        idamFunctions.getUserDetails(authToken, args)
+          .then(userDetails => {
+            req.idam = { userDetails };
+            next();
+          })
+          .catch(error => {
+            logger.error(`An error occurred when authenticating the user: ${error}`);
+            res.redirect(args.indexUrl);
+          });
+      } else {
+        logger.error('Code has not been set on the query string');
+        res.redirect(args.indexUrl);
+      }
       return;
     }
 
-    const code = req.query.code;
-    if (!code) {
-      logger.error('Code has not been set on the query string');
+    const state = cookies.get(req, stateCookieName);
+    if (!state) {
+      logger.error('State cookie does not exist');
       res.redirect(args.indexUrl);
       return;
     }

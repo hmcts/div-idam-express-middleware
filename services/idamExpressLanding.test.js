@@ -98,6 +98,33 @@ describe('idamExpressLanding', () => {
         expect(res.redirect.calledWith('/')).to.equal(true);
         expect(next.callCount).to.equal(0);
       });
+
+      context('authToken query', () => {
+        beforeEach(() => {
+          req.query[config.tokenCookieName] = 'authToken';
+        });
+
+        it('should set the authToken cookie with the query value', () => {
+          getUserDetails.resolves(userDetails);
+
+          idamExpressLanding(req, res, next);
+
+          expect(getUserDetails.callCount).to.equal(1);
+          expect(res.cookie.callCount).to.equal(1);
+          expect(next.callCount).to.equal(1);
+          expect(req.cookies[config.tokenCookieName]).to.equal('authToken');
+        });
+
+        it('should redirect if authToken is invalid', () => {
+          getUserDetails.rejects();
+
+          idamExpressLanding(req, res, next);
+
+          expect(res.redirect.callCount).to.equal(1);
+          expect(res.redirect.calledWith('/')).to.equal(true);
+          expect(next.callCount).to.equal(0);
+        });
+      });
     }
 
     it('redirects if no state exists', () => {
