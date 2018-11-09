@@ -19,22 +19,26 @@ const idamExpressLanding = (args = {}) => {
     // If no code then landing page was not reached through IDAM
     if (!code) {
       if (authToken) {
-        // validate authToken. Throws error if invalid
-        jwtDecode(authToken);
+        try {
+          // validate authToken, do nothing if error
+          jwtDecode(authToken);
 
-        cookies.set(res, tokenCookieName, authToken, args.hostName);
-        // set cookie on req so it can be used during this request
-        req.cookies = req.cookies || {};
-        req.cookies[tokenCookieName] = authToken;
-        idamFunctions.getUserDetails(authToken, args)
-          .then(userDetails => {
-            req.idam = { userDetails };
-            next();
-          })
-          .catch(error => {
-            logger.error(`An error occurred when authenticating the user: ${error}`);
-            res.redirect(args.indexUrl);
-          });
+          cookies.set(res, tokenCookieName, authToken, args.hostName);
+          // set cookie on req so it can be used during this request
+          req.cookies = req.cookies || {};
+          req.cookies[tokenCookieName] = authToken;
+          idamFunctions.getUserDetails(authToken, args)
+            .then(userDetails => {
+              req.idam = { userDetails };
+              next();
+            })
+            .catch(error => {
+              logger.error(`An error occurred when authenticating the user: ${error}`);
+              res.redirect(args.indexUrl);
+            });
+        } catch (error) {
+          next();
+        }
       } else {
         logger.error('Code has not been set on the query string');
         res.redirect(args.indexUrl);

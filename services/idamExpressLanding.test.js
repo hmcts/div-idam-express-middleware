@@ -117,17 +117,13 @@ describe('idamExpressLanding', () => {
           expect(req.cookies[config.tokenCookieName]).to.equal(testToken);
         });
 
-        it('should throw error is authToken is invalid', () => {
+        it('should do nothing but call next when authToken is invalid', () => {
           req.query[config.tokenCookieName] = 'invalidAuthToken';
 
-          try {
-            idamExpressLanding(req, res, next);
-          } catch (error) {
-            expect(typeof error).to.not.equal('undefined');
-          }
+          idamExpressLanding(req, res, next);
 
           expect(res.redirect.callCount).to.equal(0);
-          expect(next.callCount).to.equal(0);
+          expect(next.callCount).to.equal(1);
         });
 
         it('should redirect if authToken is unauthorised', () => {
