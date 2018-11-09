@@ -37,7 +37,7 @@ const idamExpressLanding = (args = {}) => {
               res.redirect(args.indexUrl);
             });
         } catch (error) {
-          next(); 
+          next();
         }
       } else {
         logger.error('Code has not been set on the query string');

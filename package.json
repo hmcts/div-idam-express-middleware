@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/div-idam-express-middleware",
-  "version": "6.3.4",
+  "version": "6.3.5",
   "description": "Express middleware for IDAM integration",
   "license": "MIT",
   "main": "index.js",
@@ -14,7 +14,7 @@
     "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scanner"
   },
   "dependencies": {
-    "@hmcts/nodejs-logging": "^2.2.0",
+    "@hmcts/nodejs-logging": "^3.0.0",
     "jwt-decode": "^2.2.0",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
