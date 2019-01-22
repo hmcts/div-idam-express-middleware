@@ -10,6 +10,7 @@ const idamExpressLogout = (args = {}) => {
   const idamFunctions = idamWrapper.setup(args);
 
   const tokenCookieName = args.tokenCookieName || config.tokenCookieName;
+  const appInsightsCookieName = args.appInsightsCookieName || config.appInsightsCookieName;
 
   return (req, res, next) => {
     const authToken = cookies.get(req, tokenCookieName);
@@ -25,8 +26,9 @@ const idamExpressLogout = (args = {}) => {
     return request.delete(options)
       .then(() => {
         logger.info('Token successfully deleted');
-        // if logout is successfull remove token cookie
+        // if logout is successful remove token cookie
         cookies.remove(res, tokenCookieName);
+        cookies.remove(res, appInsightsCookieName);
         next();
       })
       .catch(error => {

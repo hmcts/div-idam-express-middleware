@@ -9,6 +9,7 @@ const idamExpressProtect = (args = {}) => {
   const idamFunctions = idamWrapper.setup(args);
 
   const tokenCookieName = args.tokenCookieName || config.tokenCookieName;
+  const appInsightsCookieName = args.appInsightsCookieName || config.appInsightsCookieName;
 
   return (req, res, next) => {
     const authToken = cookies.get(req, tokenCookieName);
@@ -23,6 +24,7 @@ const idamExpressProtect = (args = {}) => {
         .catch(error => {
           logger.error(`User failed authentication: ${error}`);
           cookies.remove(res, tokenCookieName);
+          cookies.remove(res, appInsightsCookieName);
           res.redirect(args.indexUrl);
         });
     } else {

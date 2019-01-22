@@ -66,7 +66,7 @@ describe('idamExpressLogout', () => {
           expect(cookies.get.calledOnce).to.eql(true);
           expect(request.delete.calledOnce).to.eql(true);
           expect(request.delete.calledWith(options)).to.eql(true);
-          expect(cookies.remove.calledOnce).to.eql(true);
+          expect(cookies.remove.calledTwice).to.eql(true);
         })
         .then(done, done);
     });

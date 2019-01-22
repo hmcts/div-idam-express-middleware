@@ -11,6 +11,7 @@ const idamExpressLanding = (args = {}) => {
 
   const tokenCookieName = args.tokenCookieName || config.tokenCookieName;
   const stateCookieName = args.stateCookieName || config.stateCookieName;
+  const appInsightsCookieName = args.appInsightsCookieName || config.appInsightsCookieName;
 
   return (req, res, next) => {
     const authToken = req.query[tokenCookieName];
@@ -70,6 +71,7 @@ const idamExpressLanding = (args = {}) => {
           .getUserDetails(response.access_token, args);
       })
       .then(userDetails => {
+        cookies.set(res, appInsightsCookieName, userDetails.id, args.hostName);
         req.idam = { userDetails };
         next();
       })

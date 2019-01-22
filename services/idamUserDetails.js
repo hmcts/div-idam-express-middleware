@@ -5,10 +5,11 @@ const cookies = require('../utilities/cookies');
 
 const logger = Logger.getLogger(__filename);
 
-const idamExpressProtect = (args = {}) => {
+const idamUserDetails = (args = {}) => {
   const idamFunctions = idamWrapper.setup(args);
 
   const tokenCookieName = args.tokenCookieName || config.tokenCookieName;
+  const appInsightsCookieName = args.appInsightsCookieName || config.appInsightsCookieName;
 
   return (req, res, next) => {
     const authToken = cookies.get(req, tokenCookieName);
@@ -23,6 +24,7 @@ const idamExpressProtect = (args = {}) => {
         .catch(error => {
           logger.error(`User failed authentication: ${error}`);
           cookies.remove(res, tokenCookieName);
+          cookies.remove(res, appInsightsCookieName);
           next();
         });
     } else {
@@ -31,4 +33,4 @@ const idamExpressProtect = (args = {}) => {
   };
 };
 
-module.exports = idamExpressProtect;
+module.exports = idamUserDetails;

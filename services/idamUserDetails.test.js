@@ -4,6 +4,7 @@ const config = require('../config');
 const idamWrapper = require('../wrapper');
 const middleware = require('./idamUserDetails');
 const sinonStubPromise = require('sinon-stub-promise');
+const cookies = require('../utilities/cookies');
 
 sinonStubPromise(sinon);
 
@@ -34,27 +35,29 @@ describe('idamUserDetails', () => {
         clearCookie: sinon.stub()
       };
       next = sinon.stub();
+      sinon.stub(cookies, 'remove');
     });
 
     {
-      let idamExpressProtect = null;
+      let idamUserDetails = null;
       let getUserDetails = null;
 
       beforeEach(() => {
         getUserDetails = sinon.stub().returnsPromise();
         sinon.stub(idamWrapper, 'setup').returns({ getUserDetails });
-        idamExpressProtect = middleware(idamArgs);
+        idamUserDetails = middleware(idamArgs);
       });
 
       afterEach(() => {
         idamWrapper.setup.restore();
+        cookies.remove.restore();
       });
 
       it('calls next on successful auth', () => {
         req.cookies[config.tokenCookieName] = 'token';
 
         getUserDetails.resolves(userDetails);
-        idamExpressProtect(req, res, next);
+        idamUserDetails(req, res, next);
 
         expect(getUserDetails.callCount).to.equal(1);
         expect(next.callCount).to.equal(1);
@@ -64,7 +67,7 @@ describe('idamUserDetails', () => {
         req.cookies[config.tokenCookieName] = 'token';
 
         getUserDetails.resolves(userDetails);
-        idamExpressProtect(req, res, next);
+        idamUserDetails(req, res, next);
 
         expect(getUserDetails.callCount).to.equal(1);
         expect(next.callCount).to.equal(1);
@@ -75,7 +78,7 @@ describe('idamUserDetails', () => {
         req.cookies[config.tokenCookieName] = 'token';
 
         getUserDetails.rejects();
-        idamExpressProtect(req, res, next);
+        idamUserDetails(req, res, next);
 
         expect(getUserDetails.callCount).to.equal(1);
         expect(next.callCount).to.equal(1);
@@ -85,18 +88,18 @@ describe('idamUserDetails', () => {
         req.cookies[config.tokenCookieName] = 'token';
 
         getUserDetails.rejects();
-        idamExpressProtect(req, res, next);
+        idamUserDetails(req, res, next);
 
-        expect(res.clearCookie.callCount).to.equal(1);
+        expect(cookies.remove.calledTwice).to.equal(true);
       });
 
       it('cookie to be removed if getUserDetails rejects', () => {
         req.cookies[config.tokenCookieName] = 'token';
 
         getUserDetails.rejects();
-        idamExpressProtect(req, res, next);
+        idamUserDetails(req, res, next);
 
-        expect(res.clearCookie.callCount).to.equal(1);
+        expect(cookies.remove.calledTwice).to.equal(true);
       });
     }
 
