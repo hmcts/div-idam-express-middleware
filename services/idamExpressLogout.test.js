@@ -14,11 +14,11 @@ let next = null;
 const idamApiUrl = '/idamApiUrl';
 const authToken = 'token';
 const logoutUrl = `${idamApiUrl}/session/${authToken}`;
-const serviceAuth = 'Basic base64String';
+const serviceAuth = 'base64String';
 const options = {
   uri: logoutUrl,
   headers: {
-    Authorization: serviceAuth,
+    Authorization: `Basic ${serviceAuth}`,
     'Content-Type': 'application/x-www-form-urlencoded'
   }
 };

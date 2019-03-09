@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/div-idam-express-middleware",
-  "version": "6.3.5",
+  "version": "6.4.0",
   "description": "Express middleware for IDAM integration",
   "license": "MIT",
   "main": "index.js",
@@ -8,8 +8,7 @@
     "lint": "eslint .",
     "test-coverage": "LOG_LEVEL=OFF istanbul cover _mocha services/*.test.js utilities/*.test.js wrapper/*.test.js -- --recursive",
     "posttest-coverage": "istanbul check-coverage --statements 80 --branches 80 --functions 80 --lines 80",
-    "test-nsp": "yarn nsp check",
-    "test": "yarn lint && yarn test-coverage && yarn test-nsp",
+    "test": "yarn lint && yarn test-coverage",
     "test-unit": "NODE_PATH=. mocha services/*.test.js utilities/*.test.js wrapper/*.test.js --reporter spec --recursive -t 3000",
     "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scanner"
   },

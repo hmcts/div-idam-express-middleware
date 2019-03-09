@@ -10,7 +10,7 @@ describe('getServiceAuth', () => {
 
     const base64String = Buffer.from(`${args.idamClientID}:${args.idamSecret}`).toString('base64');
 
-    expect(getServiceAuth(args)).to.equal(`Basic ${base64String}`);
+    expect(getServiceAuth(args)).to.equal(base64String);
   });
 
   it('should throw an error when no client id and secret exists', () => {
