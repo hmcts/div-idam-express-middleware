@@ -18,7 +18,7 @@ const serviceAuth = 'base64String';
 const options = {
   uri: logoutUrl,
   headers: {
-    Authorization: serviceAuth,
+    Authorization: `Basic ${serviceAuth}`,
     'Content-Type': 'application/x-www-form-urlencoded'
   }
 };

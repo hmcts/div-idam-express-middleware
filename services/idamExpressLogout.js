@@ -17,7 +17,7 @@ const idamExpressLogout = (args = {}) => {
     const options = {
       uri: logoutUrl,
       headers: {
-        Authorization: idamFunctions.getServiceAuth(),
+        Authorization: `Basic ${idamFunctions.getServiceAuth()}`,
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     };
