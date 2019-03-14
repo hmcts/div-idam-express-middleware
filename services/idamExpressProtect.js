@@ -21,7 +21,7 @@ const idamExpressProtect = (args = {}) => {
           next();
         })
         .catch(error => {
-          logger.error(`User failed authentication: ${error}`);
+          logger.error(`User failed authentication when protecting page: ${error}`);
           cookies.remove(res, tokenCookieName);
           res.redirect(args.indexUrl);
         });
