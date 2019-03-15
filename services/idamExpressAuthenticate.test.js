@@ -9,7 +9,7 @@ sinonStubPromise(sinon);
 let req = null;
 let res = null;
 let next = null;
-const idamArgs = {};
+const idamArgs = { state: '__state__' };
 const userDetails = {
   id: 'idam.user.id',
   email: 'email@email.com'
@@ -47,6 +47,14 @@ describe('idamExpressAuthenticate', () => {
       afterEach(() => {
         idamWrapper.setup.restore();
       });
+
+      describe('with custom state', () => {
+        it('should pass the state as redirection', () => {
+          idamExpressAuthenticate(req, res, next);
+          expect(getIdamLoginUrl.calledWith({ state: '__state__' })).to.equal(true);
+        });
+      });
+
 
       describe('no auth token', () => {
         it('should call getIdamLoginUrl', () => {
