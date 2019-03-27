@@ -18,9 +18,7 @@ const idamExpressAuthenticate = (args = {}) => {
       cookies.remove(res, stateCookieName);
     }
 
-    const getState = () => {
-      return args.state || UUID();
-    };
+    const getState = args.state || UUID;
 
     const redirectUser = () => {
       const state = getState();

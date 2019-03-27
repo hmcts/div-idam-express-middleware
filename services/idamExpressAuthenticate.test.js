@@ -9,7 +9,11 @@ sinonStubPromise(sinon);
 let req = null;
 let res = null;
 let next = null;
-const idamArgs = { state: '__state__' };
+const idamArgs = {
+  state: () => {
+    return '__state__';
+  }
+};
 const userDetails = {
   id: 'idam.user.id',
   email: 'email@email.com'
