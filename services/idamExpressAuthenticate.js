@@ -18,12 +18,13 @@ const idamExpressAuthenticate = (args = {}) => {
       cookies.remove(res, stateCookieName);
     }
 
+    const getState = args.state || UUID;
+
     const redirectUser = () => {
-      const state = UUID();
+      const state = getState();
       cookies.set(res, stateCookieName, state, args.hostName);
       res.redirect(idamFunctions.getIdamLoginUrl({ state }));
     };
-
     const authToken = cookies.get(req, tokenCookieName);
     if (authToken) {
       idamFunctions

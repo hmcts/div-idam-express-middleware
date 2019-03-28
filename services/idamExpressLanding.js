@@ -46,7 +46,7 @@ const idamExpressLanding = (args = {}) => {
       return;
     }
 
-    const state = cookies.get(req, stateCookieName);
+    const state = cookies.get(req, stateCookieName) || req.query.state;
     if (!state) {
       logger.error('State cookie does not exist');
       res.redirect(args.indexUrl);
