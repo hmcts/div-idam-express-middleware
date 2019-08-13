@@ -10,7 +10,8 @@
     "posttest-coverage": "istanbul check-coverage --statements 80 --branches 80 --functions 80 --lines 80",
     "test": "yarn lint && yarn test-coverage",
     "test-unit": "NODE_PATH=. mocha services/*.test.js utilities/*.test.js wrapper/*.test.js --reporter spec --recursive -t 3000",
-    "test-pact": "NODE_PATH=. mocha 'test/pact/*.js' --timeout 15000 --reporter spec",
+    "test:pact": "NODE_PATH=. mocha 'test/pact/contract/*.pact.js' --timeout 15000 --reporter spec",
+    "publish-pact": "NODE_PATH=. LOG_LEVEL=error mocha 'test/pact/PublishPact.js' --timeout 15000 --reporter spec",
     "sonar-scanner": "node_modules/sonar-scanner/bin/sonar-scanner"
   },
   "dependencies": {
