@@ -1,6 +1,6 @@
 {
   "name": "@hmcts/div-idam-express-middleware",
-  "version": "6.5.0",
+  "version": "6.6.0",
   "description": "Express middleware for IDAM integration",
   "license": "MIT",
   "main": "index.js",
@@ -29,7 +29,6 @@
     "eslint-plugin-mocha": "^4.11.0",
     "istanbul": "^0.4.5",
     "mocha": "^5.0.0",
-    "nsp": "^3.2.1",
     "sinon": "^2.3.2",
     "sinon-stub-promise": "^4.0.0",
     "sonar-scanner": "^1.0.1"
