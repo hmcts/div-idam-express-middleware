@@ -20,6 +20,7 @@ describe('loginUrl', () => {
     args.idamLoginUrl = 'some-url';
     args.idamClientID = 'some-id';
     args.redirectUri = 'some-uri';
+    args.language = 'cy';
     // Act.
     const output = loginUrl(options, args);
     // Assert.
