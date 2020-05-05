@@ -5,7 +5,8 @@ const defaultQueryStringParams = { response_type: 'code' };
 const loginUrl = (options = {}, args = {}) => {
   const queryString = Object.assign({
     client_id: args.idamClientID,
-    redirect_uri: args.redirectUri
+    redirect_uri: args.redirectUri,
+    ui_locales: args.language
   }, defaultQueryStringParams, options);
 
   return args.idamLoginUrl + url.format({ query: queryString });
