@@ -52,11 +52,11 @@ jobs:
 
       - name: Configure NPM auth
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_api_token }}" > ~/.npmrc
 
       - name: Publish to NPM
         run: |
           npm publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.npm_api_token }}
 
