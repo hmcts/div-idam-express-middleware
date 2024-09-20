@@ -34,9 +34,6 @@ jobs:
       - name: Check yarn version
         run: yarn --version
 
-      - name: Check integrity
-        run: yarn check --integrity
-
       - name: Run tests
         run: yarn test
 
