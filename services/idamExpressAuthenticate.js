@@ -1,5 +1,5 @@
 const idamWrapper = require('../wrapper');
-const UUID = require('uuid/v4');
+const { v4: UUID } = require('uuid');
 const { Logger } = require('@hmcts/nodejs-logging');
 const config = require('../config');
 const cookies = require('../utilities/cookies');
