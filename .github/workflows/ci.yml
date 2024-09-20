@@ -3,10 +3,10 @@ name: Node.js CI
 on:
   push:
     branches:
-      - main
+      - upgrades-for-cves
   pull_request:
     branches:
-      - main
+      - upgrades-for-cves
   # Trigger deployment on tags
   release:
     types: [created]
