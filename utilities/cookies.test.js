@@ -48,7 +48,7 @@ describe('cookies', () => {
       // Act.
       const output = cookies.get(req, 'nonexistent-cookie');
       // Assert.
-      expect(output).to.equal(undefined); // eslint-disable-line no-undefined
+      expect(output).to.equal(undefined);  
     });
 
     it('returns undefined when no cookies set', () => {
@@ -57,7 +57,7 @@ describe('cookies', () => {
       // Act.
       const output = cookies.get(req, 'nonexistent-cookie');
       // Assert.
-      expect(output).to.equal(undefined); // eslint-disable-line no-undefined
+      expect(output).to.equal(undefined);  
     });
   });
 
