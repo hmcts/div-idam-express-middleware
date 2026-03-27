@@ -9,17 +9,7 @@
 
 ## Installation
 
-As of now, this module is published only in a private repository.
-We are working on publishing this project to NPM.
-Until then, the package can be installed from its github URL, examples:
-
-```bash
-# Install the latest version
-yarn add https://github.com/hmcts/div-idam-express-middleware
-
-# Install a specific version
-yarn add https://github.com/hmcts/div-idam-express-middleware#4.0.0
-```
+yarn add @hmcts/div-idam-express-middleware
 
 
 ## Available functions
@@ -42,23 +32,51 @@ const idamExpressMiddleware = require('@hmcts/div-idam-express-middleware');
 
 const app = express();
 const args = {
-  continueUrl: 'http://localhost:8090',
-  indexUrl: '/index'
+  redirectUri: {URL_TO_REDIRECT_TO_AFTER_LOGIN},
+  indexUrl: '/index',
+  idamApiUrl: {URL_TO_IDAM_API},
+  idamLoginUrl: {URL_TO_REDIRECT_USER_TO_LOGIN},
+  idamSecret: {IDAM_SECRET},
+  idamClientID: {IDAM_CLIENT_ID}
 };
 
-app.use(idamExpressMiddleware.landingPage(args));
-app.use(idamExpressMiddleware.authenticate(args));
+app.use(idamExpressMiddleware.userDetails(args));
+app.get(paths.login, idamExpressMiddleware.authenticateMiddleware(args));
+app.get(paths.redirectUrl, idamExpressMiddleware.landingPage(idamConfig));
 app.use(idamExpressMiddleware.protect(args));
+app.get(paths.logout, idamExpressMiddleware.logout(args));
 ```
+
+NB. as the cookies have `secure: true` set you need to make browser requests using https. In a deployed environment 
+where we terminate https on a load balancer that is fine, but if you are running without a loadbalancer (most likely
+localhost) you will need to be using https.  
 
 ### List of available args
 
-* **indexUrl** (required) - the url for the index page of the service, or whatever page you want the user to be redirected to on auth failure
-* **continueUrl** (required) - passed to the idamWrapper to determine where to redirect to on successful login
-* **authRole** - passed to the idamWrapper to determine which role to authenticate against. Default value is citizen
-* **queryName** - the jwt token is passed back to the redirect continueUrl as a query parameter. By default the query parameter is `jwt`
-* **authTokenName** - the name of the cookie that the jwt token will be saved to. By default is `__auth-token`
-* **stateCookieName** - the name of the cookie that stores the state identifier. By default is `state`
-* **hostName** - the main service name / url. By default is the PUBLIC_HOSTNAME environment variable
-* **idamApiUrl** - used by the idamWrapper. The url where all API calls will be made to. By default is defined in the config file in the idamWrapper repository
-* **idamLoginUrl** - used by the idamWrapper. The url where the user will be redirected to if they require a login for authentication. By default is defined in the config file in the idamWrapper repository
+* **indexUrl** (required) - the url for the index page of the service, or whatever page you want the user to be redirected to on auth failure.
+* **redirectUri** (required) - passed to the idamWrapper to determine where to redirect to on successful login. Should create user session and redirect to first logged in page.
+* **idamClientID** (required) - id of service to use idam.
+* **idamSecrete** (required) - secret for service to use idam.
+* **idamApiUrl** (required) - used by the idamWrapper. The url where all API calls will be made to.
+* **idamLoginUrl** (required) - used by the idamWrapper. The url where the user will be redirected to if they require a login for authentication.
+* **tokenCookieName** - the name of the cookie that the jwt token will be saved to. By default is `__auth-token`.
+* **stateCookieName** - the name of the cookie that stores the state identifier. By default is `state`.
+* **hostName** - the main service name / url. By default is the PUBLIC_HOSTNAME environment variable.
+* **state** - state to padd the oauth flow. By default is a random string.
+* **openId** - boolean true to use openId endpoints false to use legacy endpoints. By default is false.
+
+### OpenId
+
+To use the open id endpoints rather than the legacy endpoints for getting a token and user details add the argument openId when initialising idamExpressMiddleware 
+
+```javascript
+const args = {
+  redirectUri: {URL_TO_REDIRECT_TO_AFTER_LOGIN},
+  indexUrl: '/index',
+  idamApiUrl: {URL_TO_IDAM_API},
+  idamLoginUrl: {URL_TO_REDIRECT_USER_TO_LOGIN},
+  idamSecret: {IDAM_SECRET},
+  idamClientID: {IDAM_CLIENT_ID},
+  openId: true
+};
+```

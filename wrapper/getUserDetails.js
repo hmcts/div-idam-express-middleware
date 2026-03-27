@@ -1,8 +1,10 @@
 const request = require('request-promise-native');
 
 const getUserDetails = (authToken, args) => {
+  const userDetailsEndpoint = args.openId ? '/o/userinfo' : '/details';
+
   const options = {
-    uri: `${args.idamApiUrl}/details`,
+    uri: `${args.idamApiUrl}${userDetailsEndpoint}`,
     headers: { Authorization: `Bearer ${authToken}` },
     json: true
   };
