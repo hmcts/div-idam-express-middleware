@@ -4,24 +4,14 @@ const idamExpressProtect = require('./services/idamExpressProtect');
 const idamExpressLogout = require('./services/idamExpressLogout');
 const idamUserDetails = require('./services/idamUserDetails');
 
-const authenticate = (args = {}) => {
-  return idamExpressAuthenticate(args);
-};
+const authenticate = (args = {}) => idamExpressAuthenticate(args);
 
-const landingPage = (args = {}) => {
-  return idamExpressLanding(args);
-};
+const landingPage = (args = {}) => idamExpressLanding(args);
 
-const protect = (args = {}) => {
-  return idamExpressProtect(args);
-};
+const protect = (args = {}) => idamExpressProtect(args);
 
-const logout = (args = {}) => {
-  return idamExpressLogout(args);
-};
+const logout = (args = {}) => idamExpressLogout(args);
 
-const userDetails = (args = {}) => {
-  return idamUserDetails(args);
-};
+const userDetails = (args = {}) => idamUserDetails(args);
 
 module.exports = { authenticate, landingPage, protect, logout, userDetails };

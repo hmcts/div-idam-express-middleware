@@ -1,13 +1,14 @@
-const request = require('request-promise-native');
+const got = require('got');
 
-const getUserDetails = (authToken, args) => {
+function getUserDetails(authToken, args) {
   const options = {
-    uri: `${args.idamApiUrl}/details`,
     headers: { Authorization: `Bearer ${authToken}` },
-    json: true
+    responseType: 'json'
   };
 
-  return request.get(options);
-};
+  const url = `${args.idamApiUrl}/details`;
+
+  return got.get(url, options).then(response => response.body);
+}
 
 module.exports = getUserDetails;

@@ -1,34 +1,42 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
-const request = require('request-promise-native');
+const got = require('got'); // Change this to require 'got'
 const accessToken = require('./accessToken');
 
 describe('accessToken', () => {
   const args = {};
+  let postStub;
 
   beforeEach(() => {
-    sinon.stub(request, 'post');
+    postStub = sinon.stub(got, 'post').returns({ json: sinon.stub().resolves({}) });
   });
 
   afterEach(() => {
-    request.post.restore();
+    postStub.restore();
   });
 
-  it('makes the request to obtain token', () => {
-    // Arrange.
+  it('makes the request to obtain token', async () => {
+    // Arrange
     const options = { field: 'value' };
     args.idamApiUrl = 'some-url';
     args.idamClientID = 'some-id';
     args.idamSecret = 'some-secret';
-    // Act.
-    accessToken(options, args);
-    // Assert.
-    expect(request.post.calledOnce).to.equal(true);
-    const requestOptions = request.post.getCall(0).args.pop();
-    expect(requestOptions).to.have.property('json', true);
-    expect(requestOptions).to.have.nested.property('auth.user', args.idamClientID);
-    expect(requestOptions).to.have.nested.property('auth.pass', args.idamSecret);
-    expect(requestOptions).to.have.nested.property('form.field', options.field);
-    expect(requestOptions.uri).to.contain(args.idamApiUrl);
+
+    // Act
+    await accessToken(options, args);
+
+    // Assert
+    expect(postStub.calledOnce).to.equal(true);
+    const [url, callOptions] = postStub.getCall(0).args;
+
+    expect(url).to.equal(`${args.idamApiUrl}/oauth2/token`);
+    expect(callOptions).to.have.property('username', args.idamClientID);
+    expect(callOptions).to.have.property('password', args.idamSecret);
+    expect(callOptions.headers).to.deep.include({
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    expect(callOptions.body).to.include('grant_type=authorization_code');
+    expect(callOptions.body).to.include('field=value');
   });
 });

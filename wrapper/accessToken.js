@@ -1,25 +1,21 @@
-const request = require('request-promise-native');
+const got = require('got');
+const qs = require('qs');
 
-const requestDefaults = {
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/x-www-form-urlencoded'
-  },
-  json: true
-};
-const formDefaults = { grant_type: 'authorization_code' };
+function accessToken(options = {}, args) {
+  const url = `${args.idamApiUrl}/oauth2/token`;
+  const body = qs.stringify(Object.assign({}, { grant_type: 'authorization_code' }, options));
 
-const accessToken = (options = {}, args) => {
-  const requestOptions = Object.assign({
-    uri: `${args.idamApiUrl}/oauth2/token`,
-    form: Object.assign({}, formDefaults, options),
-    auth: {
-      user: args.idamClientID,
-      pass: args.idamSecret
-    }
-  }, requestDefaults);
+  return got.post(url, {
+    body,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    username: args.idamClientID,
+    password: args.idamSecret
+  }).json();
+}
 
-  return request.post(requestOptions);
-};
+accessToken.post = accessToken;
 
 module.exports = accessToken;

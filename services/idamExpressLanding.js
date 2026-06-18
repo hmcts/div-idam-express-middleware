@@ -16,15 +16,12 @@ const idamExpressLanding = (args = {}) => {
     const authToken = req.query[tokenCookieName];
     const code = req.query.code;
 
-    // If no code then landing page was not reached through IDAM
     if (!code) {
       if (authToken) {
         try {
-          // validate authToken, do nothing if error
           jwtDecode(authToken);
 
           cookies.set(res, tokenCookieName, authToken, args.hostName);
-          // set cookie on req so it can be used during this request
           req.cookies = req.cookies || {};
           req.cookies[tokenCookieName] = authToken;
           idamFunctions.getUserDetails(authToken, args)
@@ -63,11 +60,9 @@ const idamExpressLanding = (args = {}) => {
       })
       .then(response => {
         cookies.set(res, tokenCookieName, response.access_token, args.hostName);
-        // set cookie on req so it can be used during this request
         req.cookies = req.cookies || {};
         req.cookies[tokenCookieName] = response.access_token;
-        return idamFunctions
-          .getUserDetails(response.access_token, args);
+        return idamFunctions.getUserDetails(response.access_token, args);
       })
       .then(userDetails => {
         req.idam = { userDetails };

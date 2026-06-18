@@ -1,0 +1,62 @@
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - upgrades-for-cves
+  pull_request:
+    branches:
+      - upgrades-for-cves
+  # Trigger deployment on tags
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['18.17.1']
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Check yarn version
+        run: yarn --version
+
+      - name: Run tests
+        run: yarn test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/upgrades-for-cves'  
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.17.1'
+
+      - name: Configure NPM auth
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.npm_api_token }}" > ~/.npmrc
+
+      - name: Publish to NPM
+        run: |
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.npm_api_token }}
+
