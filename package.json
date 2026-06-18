@@ -4,6 +4,10 @@
   "description": "Express middleware for IDAM integration",
   "license": "MIT",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hmcts/div-idam-express-middleware.git"
+  },
   "scripts": {
     "lint": "eslint .",
     "test-coverage": "LOG_LEVEL=OFF nyc --reporter=text mocha services/*.test.js utilities/*.test.js wrapper/*.test.js --recursive",
