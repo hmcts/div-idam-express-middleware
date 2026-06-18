@@ -2,15 +2,16 @@ name: Build
 on:
   push:
     branches:
-      - DFR-4716
+      - master
   pull_request:
     branches:
-      - DFR-4716
+      - master
   release:
-    types: [created]
+    types: [published]
 
 jobs:
   build:
+    if: github.event_name != 'release'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -40,48 +41,47 @@ jobs:
       - name: Run tests
         run: yarn test
 
-#  release:
-#    runs-on: ubuntu-latest
-#    needs: build
-#    if: github.ref == 'refs/heads/DFR-4716'
-#    permissions:
-#      contents: read
-#      id-token: write
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v6
-#        with:
-#          ref: ${{ github.event.release.target_commitish }}
-#
-#      - name: Validate and extract release information
-#        id: release
-#        uses: manovotny/github-releases-for-automated-package-publishing-action@v2.0.1
-#
-#      - name: Setup Node.js
-#        uses: actions/setup-node@v6
-#        with:
-#          node-version: '24'
-#
-#      - name: Ensure npm version (Trusted Publishing)
-#        run: |
-#          npm --version
-#          npm i -g npm@11.5.1
-#          npm --version
-#
-#      - name: Install dependencies
-#        run: yarn install --immutable
-#
-#      - name: Publish version (OIDC)
-#        run: |
-#          # Ensure we do not publish using token-based auth (classic/granular).
-#          unset NODE_AUTH_TOKEN
-#
-#          # Use a fresh npm user config with no auth token to force OIDC Trusted Publishing.
-#          export NPM_CONFIG_USERCONFIG="$RUNNER_TEMP/npmrc-noauth"
-#          printf "registry=https://registry.npmjs.org/\n" > "$NPM_CONFIG_USERCONFIG"
-#
-#          # Remove any auth token entries if something tries to inject them.
-#          npm config delete //registry.npmjs.org/:_authToken || true
-#          npm config delete _authToken || true
-#
-#          npm publish --access public
+  release:
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.target_commitish }}
+
+      - name: Validate and extract release information
+        id: release
+        uses: manovotny/github-releases-for-automated-package-publishing-action@v2.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Ensure npm version (Trusted Publishing)
+        run: |
+          npm --version
+          npm i -g npm@11.5.1
+          npm --version
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Publish version (OIDC)
+        run: |
+          # Ensure we do not publish using token-based auth (classic/granular).
+          unset NODE_AUTH_TOKEN
+          
+          # Use a fresh npm user config with no auth token to force OIDC Trusted Publishing.
+          export NPM_CONFIG_USERCONFIG="$RUNNER_TEMP/npmrc-noauth"
+          printf "registry=https://registry.npmjs.org/\n" > "$NPM_CONFIG_USERCONFIG"
+          
+          # Remove any auth token entries if something tries to inject them.
+          npm config delete //registry.npmjs.org/:_authToken || true
+          npm config delete _authToken || true
+          
+          npm publish --access public
